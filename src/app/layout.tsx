@@ -1,7 +1,9 @@
-import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Red_Hat_Display } from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+import StoreProvider from "./StoreProvider";
+import { AuthContextProvider } from "../../context/auth-context";
 
 const redHat = Red_Hat_Display({ subsets: ["latin"] });
 
@@ -16,8 +18,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={cn(redHat.className, "flex w-full")}>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body
+        suppressHydrationWarning
+        className={cn(redHat.className, "flex w-full")}
+      >
+        <AuthContextProvider>
+          <StoreProvider>{children}</StoreProvider>
+        </AuthContextProvider>
+      </body>
     </html>
   );
 }

@@ -1,9 +1,7 @@
-import HeaderPage from "@/components/layout/header/header";
-import { Sidebar } from "@/components/layout/sidebar/sidebar";
+import HeaderPage from "@/components/layout/header/Header";
+import SidebarDesktop from "@/components/layout/sidebar/Sidebar";
 import type { Metadata } from "next";
-// import "../../app/global.css";
-
-// import { usePathname } from "next/navigation";
+// import { AuthContextProvider } from "../../../context/AuthContext";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,13 +15,12 @@ export default function AppLayout({
 }>) {
   return (
     <main className="flex w-full">
-      <Sidebar />
-      <div className="flex flex-col bg-slate-50 p-2 gap-3 w-full">
+      <SidebarDesktop />
+      <div className="flex flex-col bg-slate-50 pl-2 w-full">
         <HeaderPage />
-        <div className="border shadow-md rounded-md  overflow-auto">
-          {children}
-        </div>
+        <div className="overflow-auto">{children}</div>
       </div>
     </main>
+
   );
 }

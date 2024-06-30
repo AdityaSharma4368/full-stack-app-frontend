@@ -1,42 +1,22 @@
 "use client";
+
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useSignupHook } from "../../../../context/hooks/useSignupHook";
 
 const SignUpPage = () => {
-  const [formData, setFormData] = useState({});
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (e: any) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
-  };
+  const router = useRouter();
+  const [email, setEmail] = useState<string>();
+  const [password, setPassword] = useState<string>();
+  const [userName, setUserName] = useState<string>();
+  const { signUp, isLoading, error } = useSignupHook();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    try {
-      setLoading(true);
-      setError(false);
-      const res = await fetch("http://localhost:8000/api/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-      console.log(data, "dattatasdasd");
-      setLoading(false);
-      if (data.success === false) {
-        setError(true);
-        return;
-      }
-      redirect("/login");
-    } catch (error) {
-      setLoading(false);
-      setError(true);
-    }
+    await signUp(userName as string, email as string, password as string);
   };
+
   return (
     <div className="w-screen">
       <div className="p-3 max-w-lg mx-auto">
@@ -45,31 +25,31 @@ const SignUpPage = () => {
           <input
             type="text"
             placeholder="Username"
-            id="username"
+            id="userName"
             className="bg-slate-100 p-3 rounded-lg"
-            onChange={handleChange}
+            onChange={(e) => setUserName(e.target.value)}
           />
           <input
             type="email"
             placeholder="Email"
             id="email"
             className="bg-slate-100 p-3 rounded-lg"
-            onChange={handleChange}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <input
             type="password"
             placeholder="Password"
             id="password"
             className="bg-slate-100 p-3 rounded-lg"
-            onChange={handleChange}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <button
-            disabled={loading}
+            disabled={isLoading}
             className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
           >
-            {loading ? "Loading..." : "Sign Up"}
+            {"Sign Up"}
           </button>
-          {/* <OAuth /> */}
+          {error && <div className="text-red-500">{error}</div>}
         </form>
         <div className="flex gap-2 mt-5">
           <p>Have an account?</p>
@@ -77,7 +57,6 @@ const SignUpPage = () => {
             <span className="text-blue-500">Sign in</span>
           </Link>
         </div>
-        <p className="text-red-700 mt-5">{error && "Something went wrong!"}</p>
       </div>
     </div>
   );
